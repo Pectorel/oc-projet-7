@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Les Petits Plats</title>
+    <script src="https://kit.fontawesome.com/98c1f2f2c1.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="assets/sass/style.css">
+</head>
+<body>
+
+    <header class="container mt-5 mb-3">
+        <div class="row">
+            <h1 class="header-title text-center display-5">
+                <a href="/" class="text-decoration-none fw-bold">
+                    <img class="header-img" src="/assets/img/logo.png" alt="Les petits plats - Accueil">
+                    <br>
+                    <span class="header-subtitle">Les petits plats</span>
+                </a>
+            </h1>
+        </div>
+
+    </header>
+
+    <section id="search-container" class="container">
+
+        <form class="row" action="/" method="get">
+            <div class="col-lg-12">
+                <div class="input-group searchbar">
+                    <input class="form-control bg-secondary shadow-none border-0" id="recipe-search" type="search" name="recipe-search" placeholder="Rechercher un recette">
+
+                    <button class="btn btn-outline-secondary bg-secondary text-dark display-6" type="button">
+                        <i class="fa fa-search search-icon"></i>
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+        <div id="tags-container" class="my-4 row">
+
+            <div class="container">
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <span class="badge text-bg-blue">Coco</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div id="tag-btn-container" class="container">
+
+                        <div class="row justify-content-lg-start">
+
+                            <div class="dropdown col-lg-2">
+                                <button type="button" class="btn btn-blue text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Ingrédients</button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Lait de coco</a></li>
+                                    <li><a href="#">Sucre</a></li>
+                                    <li><a href="#">Concombre</a></li>
+                                    <li><a href="#">Citron Vert</a></li>
+                                    <li><a href="#">Oignon</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="dropdown col-lg-2">
+                                <button type="button" class="btn btn-green text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Appareils</button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Lait de coco</a></li>
+                                    <li><a href="#">Sucre</a></li>
+                                    <li><a href="#">Concombre</a></li>
+                                    <li><a href="#">Citron Vert</a></li>
+                                    <li><a href="#">Oignon</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="dropdown col-lg-2">
+                                <button type="button" class="btn btn-red text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Ustensiles</button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Lait de coco</a></li>
+                                    <li><a href="#">Sucre</a></li>
+                                    <li><a href="#">Concombre</a></li>
+                                    <li><a href="#">Citron Vert</a></li>
+                                    <li><a href="#">Oignon</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="tags-selection-container" class="container">
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="card" style="width: 18rem;">
+                        <img src="" class="card-img-top" alt="">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </section>
+
+    <section id="recipes-container" class="container">
+
+        <div class="row">
+
+        </div>
+
+    </section>
+
+
+    <script src="node_modules/@popperjs/core/dist/umd/popper-base.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
