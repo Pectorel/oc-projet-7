@@ -1,0 +1,45 @@
+/* =========== Override Bootstrap variables ========== */
+
+// Font
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap');
+$font-family-base: "Lato", sans-serif;
+
+// Headings size
+$display-font-sizes: (
+  1: 5rem,
+  2: 4.5rem,
+  3: 4rem,
+  4: 3.5rem,
+  5: 2.25rem,
+  6: 2rem
+);
+
+// Color
+$primary: #d04f4f;
+$secondary: #e7e7e7;
+
+
+// Form
+$input-padding-y: 1.5rem;
+$input-padding-x: 1.5rem;
+$input-placeholder-color: rgba(#000000, .25);
+$input-font-size: 1.125rem;
+
+// Badge
+$badge-padding-y: .625rem;
+$badge-font-size: .875rem;
+$badge-font-weight: 400;
+
+// Custom Variables
+
+// Color
+$blue: #3282F7;
+$green: #68D9A4;
+$red: #ED6454;
+
+// Btns
+$default-btn-bg-col: $blue;
+$default-btn-txt-col: #fff;
+$default-btn-padding: 1.5rem 4rem 1.5rem 1rem;
+

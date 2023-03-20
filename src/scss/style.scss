@@ -1,0 +1,82 @@
+// Imports
+@import "_partials/vars";
+@import "~bootstrap/scss/bootstrap";
+// We import custom style after bootstrap to override some style
+@import "_partials/text";
+@import "_partials/btn";
+@import "_partials/tags";
+
+
+// Custom Style
+
+// Dropdown
+
+#tags-container{
+
+  .dropdown-toggle{
+
+    position: relative;
+    width: 100%;
+
+    &::after{
+      border: none !important;
+      font: normal normal normal 1.4rem/1 FontAwesome;
+      content: "\f107" !important;
+      vertical-align: 0; /* to center vertically */
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+  }
+
+}
+
+
+
+
+
+// Header
+.page-header{
+
+  .header-img{
+    width: 52px;
+  }
+
+  .header-subtitle{
+    font-family: "DM Sans", sans-serif;
+  }
+
+
+}
+
+// Searchbar
+.searchbar{
+
+  .search-icon{
+
+    font-size: 2rem;
+
+  }
+
+}
+
+
+
+// Dropdown Buttons
+#tag-btn-container{
+
+  .btn{
+    padding: 1.5rem 4rem 1.5rem 1rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+
+    &:not(:last-child){
+      margin-right: 1.25rem;
+    }
+
+  }
+
+}
+

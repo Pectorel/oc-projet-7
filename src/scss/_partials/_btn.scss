@@ -1,0 +1,57 @@
+// Buttons related style
+
+// Mixins
+@mixin btn($bg-col: $default-btn-bg-col, $txt-col: $default-btn-txt-col, $padding: $default-btn-padding,
+  $hover-bg-col: darken($bg-col, 5%), $hover-txt-col: $txt-col, $focus: true, $active: true)
+{
+
+  background: $bg-col !important;
+
+  &:hover{
+    background: $hover-bg-col;
+    color: $hover-txt-col;
+  }
+
+  // If focus is true, set same style as hover
+  @if($focus){
+    &:focus, &:focus-visible{
+      background: $hover-bg-col;
+      color: $hover-txt-col;
+    }
+  }
+
+  @if($active){
+    &:active{
+      background: darken($hover-bg-col, 5%) !important;
+      color: $hover-txt-col;
+    }
+  }
+
+  // If dropdown menu
+  +.dropdown-menu{
+
+    background: $bg-col;
+    color: $txt-col;
+
+    *{
+      color: inherit;
+      text-decoration: none;
+    }
+
+  }
+
+
+}
+
+// Classes
+.btn-blue{
+  @include btn($blue);
+}
+
+.btn-green{
+  @include btn($green);
+}
+
+.btn-red {
+  @include btn($red);
+}
