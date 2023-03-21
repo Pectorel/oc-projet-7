@@ -1,0 +1,67 @@
+// Card general styling
+
+.card{
+
+  background: #e7e7e7;
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  color: #000;
+  height: 100%;
+
+  *{
+    color: inherit !important;
+  }
+
+  .card-thumb{
+
+    padding-top: 48%;
+    background: #c7bebe;
+
+  }
+
+  .card-content {
+
+    @extend .px-4;
+    @extend .py-4;
+
+    .card_content_header{
+
+      @extend .pb-2;
+      font-size: 1.125rem;
+
+      *{
+        font-size: inherit;
+      }
+
+      .card-title{
+
+        margin-bottom: 0;
+
+      }
+
+      .card-time-container{
+
+        .card-time-icon{
+
+          margin-right: .4rem;
+
+        }
+
+      }
+
+
+
+    }
+
+    .card-content-details{
+
+      font-size: .8125rem;
+      line-height: 1.125rem;
+
+
+    }
+
+  }
+
+}

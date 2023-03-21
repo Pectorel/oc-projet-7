@@ -5,6 +5,7 @@
 @import "_partials/text";
 @import "_partials/btn";
 @import "_partials/tags";
+@import "_partials/card";
 
 
 // Custom Style
@@ -68,15 +69,40 @@
 #tag-btn-container{
 
   .btn{
-    padding: 1.5rem 4rem 1.5rem 1rem;
+
     font-size: 1.125rem;
     font-weight: 700;
 
-    &:not(:last-child){
-      margin-right: 1.25rem;
+  }
+
+  .dropdown-menu{
+
+    min-width: 0 !important;
+    right: .75rem !important;
+    left: .75rem !important;
+    max-width: 89%;
+
+    &.show{
+      transform: none !important;
+      width: 100%;
+      box-sizing: border-box;
     }
 
   }
 
+
+
 }
+
+// Recipe list
+#recipes-container{
+
+  .recipe-line{
+
+
+
+  }
+
+}
+
 

@@ -8,8 +8,6 @@ const Recipe = function (data) {
 
     function getRecipeCardDOM() {
 
-
-
         let $article = createElement("article", ["col-lg-4"]);
 
         let $card = createElement("div", ["card"]);
@@ -19,8 +17,8 @@ const Recipe = function (data) {
         let $card_content = createElement("div", ["card-content", "container"]);
 
         let $card_content_header = createElement("header", ["card_content_header", "row"]);
-        let $card_title = createElement("h2", ["card-title", "col-lg-6"], name);
-        let $card_time_paragraph = createElement("p", ["card-time-container", "col-lg-6"]);
+        let $card_title = createElement("h2", ["card-title", "col-lg-8"], name);
+        let $card_time_paragraph = createElement("p", ["card-time-container", "col-lg-4", "fw-bold", "text-end"]);
         let $card_time_icon = createElement("i", ["card-time-icon", "fa-regular", "fa-clock"]);
         let $card_time_text = createElement("span", ["card-time-text"], `${time} min`);
 
@@ -40,15 +38,22 @@ const Recipe = function (data) {
         {
             let ingredient = ingredients[i];
 
-            let $card_ingredient = createElement("p", ["card-ingredient-line"]);
+            let $card_ingredient = createElement("span", ["card-ingredient-line", "d-block"]);
             let $card_ingredient_name = createElement("strong", ["card-ingredient-name"], ingredient["ingredient"]);
-            let quantity_text = ingredient["quantity"];
+            let quantity_text = "";
 
-            // We check if there is a unit to diplay
-            if(ingredient.hasOwnProperty("unit"))
+            // We check if we have a quantity to show
+            if(ingredient.hasOwnProperty("quantity"))
             {
-                quantity_text+=" " + ingredient["unit"];
+                quantity_text = ": " + ingredient["quantity"];
+                // We check if there is a unit to diplay
+                if(ingredient.hasOwnProperty("unit"))
+                {
+                    quantity_text+=" " + ingredient["unit"];
+                }
             }
+
+
             let $card_ingredient_quantity = createElement("span", ["card-ingredient-quantity"], quantity_text);
 
             // We append every ingredient line to the ingredient container div
@@ -58,7 +63,7 @@ const Recipe = function (data) {
 
         }
 
-        let $card_details_desc = createElement("p", ["card-details-description", "col-lg-6"], description);
+        let $card_details_desc = createElement("p", ["card-details-description", "col-lg-6"], truncate(description, 175));
 
 
         // Append elements to card-content-details div
@@ -76,10 +81,27 @@ const Recipe = function (data) {
         // Append card to article
         $article.appendChild($card);
 
-
         return $article;
 
     }
+
+    function getDropdownOptions(data)
+    {
+
+
+        let $option = createElement("li");
+
+        let $link = createElement("a", null, data, {"href": "#"});
+
+        $option.appendChild($link);
+
+        return $option;
+
+    }
+
+    function truncate(str, n){
+        return (str.length > n) ? str.slice(0, n-1) + '...' : str;
+    };
 
     return {id, name, servings, ingredients, time, description, appliance, ustensils, getRecipeCardDOM}
 }
