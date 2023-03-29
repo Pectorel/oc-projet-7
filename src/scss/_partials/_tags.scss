@@ -5,6 +5,8 @@
 
   position: relative;
   padding: .8rem 3.2rem .8rem 1.25rem;
+  display: inline-block;
+  pointer-events: none;
 
   // Close logo
   &:after{
@@ -19,10 +21,23 @@
     height: 20px;
     width: 20px;
     cursor: pointer;
+    pointer-events: all;
+  }
+  
+  &::first-letter{
+    text-transform: uppercase;
   }
 
-}
+  &.ingredient{
+    background: $blue;
+  }
 
-.text-bg-blue{
-  background: $blue;
+  &.appliance{
+    background: $green;
+  }
+
+  &.ustensil{
+    background: $red;
+  }
+
 }

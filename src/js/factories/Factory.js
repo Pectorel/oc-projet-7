@@ -1,6 +1,7 @@
 // Impoorts
 import {Recipe} from "../models/Recipe";
 import {DropdownOption} from "../models/DropdownOption";
+import {Tag} from "../models/Tag";
 
 class Factory {
 
@@ -23,6 +24,9 @@ class Factory {
                 break;
             case "dropdown":
                 res = new DropdownOption(data);
+                break;
+            case "tag":
+                res = new Tag(data);
                 break;
             default:
                 throw "Unknown type, check you factory calls"

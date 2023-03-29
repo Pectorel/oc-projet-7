@@ -124,15 +124,14 @@ function displayRecipes(recipes) {
     let k = 0;
 
     for(const ingredient of ingredients) {
-        if(k >= 30) break;
-
         /**
          *
          * @type {DropdownOption}
          */
-        let dropdownModel = new Factory({"name": ingredient}, "dropdown");
+        let dropdownModel = new Factory({"name": ingredient, "type": "ingredient"}, "dropdown");
 
         let $option = dropdownModel.getDropdownOptionDOM();
+        if(k >= 30) $option.classList.add("d-none");
         $ingredient_dropdown.appendChild($option);
 
         k++;
@@ -142,15 +141,15 @@ function displayRecipes(recipes) {
     let $appliance_dropdown = document.querySelector(".appliance .dropdown-menu");
     k = 0;
     for(const appliance of appliances) {
-        if(k >= 30) break;
 
         /**
          *
          * @type {DropdownOption}
          */
-        let dropdownModel = new Factory({"name": appliance}, "dropdown");
+        let dropdownModel = new Factory({"name": appliance, "type": "appliance"}, "dropdown");
 
         let $option = dropdownModel.getDropdownOptionDOM();
+        if(k >= 30) $option.classList.add("d-none");
         $appliance_dropdown.appendChild($option);
 
         k++;
@@ -160,15 +159,15 @@ function displayRecipes(recipes) {
     let $ustensils_dropdown = document.querySelector(".ustensils .dropdown-menu");
     k = 0;
     for(const ustensil of ustensils) {
-        if(k >= 30) break;
 
         /**
          *
          * @type {DropdownOption}
          */
-        let dropdownModel = new Factory({"name": ustensil}, "dropdown");
+        let dropdownModel = new Factory({"name": ustensil, "type": "ustensil"}, "dropdown");
 
         let $option = dropdownModel.getDropdownOptionDOM();
+        if(k >= 30) $option.classList.add("d-none");
         $ustensils_dropdown.appendChild($option);
 
         k++;

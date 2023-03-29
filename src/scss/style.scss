@@ -15,6 +15,15 @@
 
 #tags-container{
 
+  .tags-list{
+
+    &:empty{
+      margin-bottom: 0 !important;
+      display: none !important;
+    }
+
+  }
+
   .dropdown-toggle{
 
     position: relative;
