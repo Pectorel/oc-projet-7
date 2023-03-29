@@ -1,1 +1,14 @@
 // Text related style
+
+// ContentEditable
+
+[contenteditable]{
+
+  padding: 12px;
+  &:before{
+    contain: "test";
+    color: #888;
+
+  }
+
+}

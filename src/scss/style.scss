@@ -36,9 +36,6 @@
 }
 
 
-
-
-
 // Header
 .page-header{
 
@@ -82,12 +79,32 @@
     right: 0 !important;
     left: .1rem !important;
     top: 88% !important;
+    padding: 0 1rem 1rem 1rem;
 
     &.show{
       transform: none !important;
-      width: 99%;
+      width: 99.6%;
       box-sizing: border-box;
       border: none;
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      row-gap: .275rem;
+
+      li {
+
+        font-size: 1.125rem;
+
+        *{
+          display: inline-block;
+        }
+
+        *::first-letter{
+          text-transform: uppercase;
+
+        }
+      }
+
+
     }
 
   }

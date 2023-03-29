@@ -1,12 +1,33 @@
 // Imports
 import {createElement} from "../modules/createElement";
+import * as Utils from "../modules/utils";
 
-const Recipe = function (data) {
+/**
+ *
+ * Create A Recipe object with given data
+ *
+ */
+class Recipe {
+
+    /**
+     *
+     * @param data
+     * @constructor
+     */
+    constructor(data) {
+
+        this.data = data;
+
+    }
 
 
-    const {id, name, servings, ingredients, time, description, appliance, ustensils} = data;
-
-    function getRecipeCardDOM() {
+    /**
+     *
+     *
+     *
+     * @returns {HTMLElement}
+     */
+    getRecipeCardDOM() {
 
         let $article = createElement("article", ["col-lg-4"]);
 
@@ -17,10 +38,10 @@ const Recipe = function (data) {
         let $card_content = createElement("div", ["card-content", "container"]);
 
         let $card_content_header = createElement("header", ["card_content_header", "row"]);
-        let $card_title = createElement("h2", ["card-title", "col-lg-8"], name);
+        let $card_title = createElement("h2", ["card-title", "col-lg-8"], this.data["name"]);
         let $card_time_paragraph = createElement("p", ["card-time-container", "col-lg-4", "fw-bold", "text-end"]);
         let $card_time_icon = createElement("i", ["card-time-icon", "fa-regular", "fa-clock"]);
-        let $card_time_text = createElement("span", ["card-time-text"], `${time} min`);
+        let $card_time_text = createElement("span", ["card-time-text"], `${this.data["time"]} min`);
 
         // Append elements to card-time-container
         $card_time_paragraph.appendChild($card_time_icon);
@@ -34,9 +55,9 @@ const Recipe = function (data) {
 
         let $card_ingredients_container = createElement("div", ["card-ingredients", "col-lg-6"]);
 
-        for (let i = 0; i < ingredients.length; i++)
+        for (let i = 0; i < this.data["ingredients"].length; i++)
         {
-            let ingredient = ingredients[i];
+            let ingredient = this.data["ingredients"][i];
 
             let $card_ingredient = createElement("span", ["card-ingredient-line", "d-block"]);
             let $card_ingredient_name = createElement("strong", ["card-ingredient-name"], ingredient["ingredient"]);
@@ -63,7 +84,8 @@ const Recipe = function (data) {
 
         }
 
-        let $card_details_desc = createElement("p", ["card-details-description", "col-lg-6"], truncate(description, 175));
+
+        let $card_details_desc = createElement("p", ["card-details-description", "col-lg-6"], Utils.truncate(this.data["description"], 175));
 
 
         // Append elements to card-content-details div
@@ -85,24 +107,6 @@ const Recipe = function (data) {
 
     }
 
-    function getDropdownOptions(data) {
-
-
-        let $option = createElement("li");
-
-        let $link = createElement("a", null, data, {"href": "#"});
-
-        $option.appendChild($link);
-
-        return $option;
-
-    }
-
-    function truncate(str, n){
-        return (str.length > n) ? str.slice(0, n-1) + '...' : str;
-    }
-
-    return {id, name, servings, ingredients, time, description, appliance, ustensils, getRecipeCardDOM}
 }
 
 export {Recipe};

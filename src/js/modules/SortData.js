@@ -1,4 +1,4 @@
-class sortData {
+class SortData {
 
     constructor(data) {
 

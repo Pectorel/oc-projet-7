@@ -1,12 +1,14 @@
 // Import our custom CSS
 import '../scss/style.scss'
 // Import all of Bootstrap's JS
-import * as bootstrap from 'bootstrap'
+import * as bootstrap from 'bootstrap';
 
 // Custom Imports
-import {JsonFetcher} from "./modules/jsonFetcher";
-import {Recipe} from "./factories/recipe";
+import {JsonFetcher} from "./modules/JsonFetcher";
+import {Factory} from "./factories/Factory";
 import {createElement} from "./modules/createElement";
+import * as DropdownEvent from "./modules/dropdownEvents";
+
 
 async function getRecipes(){
 
@@ -16,7 +18,6 @@ async function getRecipes(){
 
         fetcher.then((res) => {
 
-            let instance = res.instance;
             let data = res.object;
 
             resolve(data);
@@ -32,7 +33,6 @@ function displayRecipes(recipes) {
     // We get the div container that will get all recipes article inserted into it
     const $recipe_section = document.querySelector("#recipes-container");
 
-
     // Setting all filters arrays
     let ingredients = [];
     let appliances = [];
@@ -44,9 +44,15 @@ function displayRecipes(recipes) {
     recipes.forEach((recipe) => {
 
         // Recipe Card
-        const recipeModel = Recipe(recipe);
+
+        /**
+         * @type {Recipe}
+         */
+        const recipeModel = new Factory(recipe, "recipe");
 
         const recipeCardDOM = recipeModel.getRecipeCardDOM();
+
+        //console.log(recipeCardDOM);
 
         // Every three element, we create a row
         if(i%3 === 0)
@@ -114,40 +120,59 @@ function displayRecipes(recipes) {
 
     // We create the dropdowns DOM options
     let $ingredient_dropdown = document.querySelector(".ingredients .dropdown-menu");
-    ingredients.forEach((ingredient) => {
 
-        let $option = createElement("li");
-        let $link = createElement("a", null, ingredient, {"href": "#"});
-        $option.appendChild($link);
+    let k = 0;
 
+    for(const ingredient of ingredients) {
+        if(k >= 30) break;
+
+        /**
+         *
+         * @type {DropdownOption}
+         */
+        let dropdownModel = new Factory({"name": ingredient}, "dropdown");
+
+        let $option = dropdownModel.getDropdownOptionDOM();
         $ingredient_dropdown.appendChild($option);
 
-    });
+        k++;
+    }
 
     // Appliances
     let $appliance_dropdown = document.querySelector(".appliance .dropdown-menu");
-    appliances.forEach((appliance) => {
+    k = 0;
+    for(const appliance of appliances) {
+        if(k >= 30) break;
 
-        let $option = createElement("li");
-        let $link = createElement("a", null, appliance, {"href": "#"});
-        $option.appendChild($link);
+        /**
+         *
+         * @type {DropdownOption}
+         */
+        let dropdownModel = new Factory({"name": appliance}, "dropdown");
 
+        let $option = dropdownModel.getDropdownOptionDOM();
         $appliance_dropdown.appendChild($option);
 
-    });
+        k++;
+    }
 
     // Ustensils
-    console.log(ustensils);
     let $ustensils_dropdown = document.querySelector(".ustensils .dropdown-menu");
-    ustensils.forEach((ustensil) => {
+    k = 0;
+    for(const ustensil of ustensils) {
+        if(k >= 30) break;
 
-        let $option = createElement("li");
-        let $link = createElement("a", null, ustensil, {"href": "#"});
-        $option.appendChild($link);
+        /**
+         *
+         * @type {DropdownOption}
+         */
+        let dropdownModel = new Factory({"name": ustensil}, "dropdown");
 
+        let $option = dropdownModel.getDropdownOptionDOM();
         $ustensils_dropdown.appendChild($option);
 
-    });
+        k++;
+    }
 
 }
 
@@ -161,5 +186,7 @@ async function init()
 }
 
 init().then(() => {
+
+    DropdownEvent.init();
 
 });
