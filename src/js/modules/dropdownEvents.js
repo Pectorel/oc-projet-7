@@ -14,11 +14,13 @@ function init() {
             $parent.classList.add("col-lg-6");
 
             let $contenteditable = $dropdown.querySelector("span");
+            $contenteditable.setAttribute("contenteditable", "");
+            $contenteditable.textContent = "";
 
             // We use a little timeout otherwise it does not focus the element
             setTimeout(() => {
                 $contenteditable.focus();
-            }, 200);
+            }, 100);
 
 
         });
@@ -29,20 +31,29 @@ function init() {
             $parent.classList.remove("col-lg-6");
             $parent.classList.add("col-lg-2");
 
+            let $contenteditable = $dropdown.querySelector("span");
+            $contenteditable.removeAttribute("contenteditable");
+            $contenteditable.textContent = $contenteditable.getAttribute("data-initial-text");
+
         });
 
     });
 
-    /*let $contenteditables = document.querySelectorAll("#tag-btn-container [contenteditable]");
+    let $contenteditables = document.querySelectorAll("#tag-btn-container [data-placeholder]");
 
     $contenteditables.forEach( $contenteditable => {
+        $contenteditable.setAttribute("data-initial-text", $contenteditable.textContent);
 
-        $contenteditable.addEventListener("click", event => {
+        // We prevent line break in content
+        $contenteditable.addEventListener("keydown", e => {
 
+            if(e.keyCode === 13)
+            {
+                e.preventDefault();
+            }
 
-        })
-
-    });*/
+        });
+    });
 
 }
 

@@ -4,10 +4,24 @@
 
 [contenteditable]{
 
-  padding: 12px;
-  &:before{
-    contain: "test";
-    color: #888;
+  position: relative;
+
+  &:empty:before{
+    content: attr(data-placeholder);
+    color: rgba(#fff, .5);
+
+  }
+
+  &:empty:after{
+
+    content: "";
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    background: #fff;
+    left: 0;
+    top: 0;
 
   }
 
