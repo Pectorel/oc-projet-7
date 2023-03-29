@@ -6,6 +6,7 @@
 @import "_partials/btn";
 @import "_partials/tags";
 @import "_partials/card";
+@import "_partials/dropdown";
 
 
 // Custom Style
@@ -78,14 +79,15 @@
   .dropdown-menu{
 
     min-width: 0 !important;
-    right: .75rem !important;
-    left: .75rem !important;
-    max-width: 89%;
+    right: 0 !important;
+    left: .1rem !important;
+    top: 88% !important;
 
     &.show{
       transform: none !important;
-      width: 100%;
+      width: 99%;
       box-sizing: border-box;
+      border: none;
     }
 
   }

@@ -85,8 +85,7 @@ const Recipe = function (data) {
 
     }
 
-    function getDropdownOptions(data)
-    {
+    function getDropdownOptions(data) {
 
 
         let $option = createElement("li");
@@ -101,7 +100,7 @@ const Recipe = function (data) {
 
     function truncate(str, n){
         return (str.length > n) ? str.slice(0, n-1) + '...' : str;
-    };
+    }
 
     return {id, name, servings, ingredients, time, description, appliance, ustensils, getRecipeCardDOM}
 }
