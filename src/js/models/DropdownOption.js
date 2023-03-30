@@ -9,8 +9,8 @@ class DropdownOption {
 
     getDropdownOptionDOM() {
 
-        let $option = createElement("li");
-        let $link = createElement("a", null, this.data["name"], {"href": "#", "data-tag-value": this.data["name"], "data-tag-type": this.data["type"]});
+        let $option = createElement("li", null, null, {"data-autocomplete-display-target": ""});
+        let $link = createElement("a", null, this.data["name"], {"href": "#", "data-tag-value": this.data["name"], "data-tag-type": this.data["type"], "data-autocomplete-option": ""});
         $option.appendChild($link);
 
         $link.addEventListener("click", e => {
@@ -44,10 +44,9 @@ class DropdownOption {
 
         $container.appendChild($tagDOM);
 
-
-
-
     }
+
+
 
 }
 

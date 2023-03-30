@@ -8,8 +8,12 @@ import {JsonFetcher} from "./modules/JsonFetcher";
 import {Factory} from "./factories/Factory";
 import {createElement} from "./modules/createElement";
 import * as DropdownEvent from "./modules/dropdownEvents";
+import {SortData} from "./modules/SortData";
+import {Autocomplete} from "./modules/Autocomplete";
 
 
+// Global variables
+let sort = null;
 async function getRecipes(){
 
     return new Promise((resolve) => {
@@ -40,7 +44,9 @@ function displayRecipes(recipes) {
 
 
     let i = 0;
-    let $row = null;
+    let $row = createElement("div", ["recipe-line", "row", "align-content-stretch", "gx-5", "gy-5", "mb-5"]);
+    $recipe_section.appendChild($row);
+
     recipes.forEach((recipe) => {
 
         // Recipe Card
@@ -51,19 +57,6 @@ function displayRecipes(recipes) {
         const recipeModel = new Factory(recipe, "recipe");
 
         const recipeCardDOM = recipeModel.getRecipeCardDOM();
-
-        //console.log(recipeCardDOM);
-
-        // Every three element, we create a row
-        if(i%3 === 0)
-        {
-            if(i !== 0)
-            {
-                $recipe_section.appendChild($row);
-            }
-
-            $row = createElement("div", ["recipe-line", "row", "align-content-stretch", "gx-5", "mb-5"]);
-        }
 
         $row.appendChild(recipeCardDOM);
 
@@ -179,13 +172,15 @@ async function init()
 {
 
     let recipes = await getRecipes();
-    displayRecipes(recipes);
-
+    await displayRecipes(recipes);
+    sort = new SortData(recipes);
 
 }
 
 init().then(() => {
 
     DropdownEvent.init();
+    Autocomplete.initEvents();
+
 
 });
