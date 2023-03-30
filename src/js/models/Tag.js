@@ -22,7 +22,6 @@ class Tag {
 
         return $tag;
 
-
     }
 
 }

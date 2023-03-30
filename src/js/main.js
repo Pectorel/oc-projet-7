@@ -13,7 +13,11 @@ import {Autocomplete} from "./modules/Autocomplete";
 
 
 // Global variables
-let sort = null;
+/**
+ * @type {SortData}
+ */
+let sort;
+
 async function getRecipes(){
 
     return new Promise((resolve) => {
@@ -173,7 +177,35 @@ async function init()
 
     let recipes = await getRecipes();
     await displayRecipes(recipes);
-    sort = new SortData(recipes);
+
+    // Always put required fields first
+    let searchParams = [
+        {
+            "target": ".tag",
+            "type": "html",
+            "options": {
+                "required": true
+            }
+        },
+        {
+            "key": "name",
+            "type": "string"
+        },
+        {
+            "key": "ingredients",
+            "type": "json",
+            "options": {
+                "json_key": "ingredient"
+            }
+        },
+        {
+            "key": "description",
+            "type": "string"
+        }
+
+    ];
+
+    sort = new SortData(recipes, searchParams, document.querySelector(".recipe-line"));
 
 }
 
@@ -182,5 +214,43 @@ init().then(() => {
     DropdownEvent.init();
     Autocomplete.initEvents();
 
+    let $recipe_searchbar = document.querySelector("#recipe-search");
+
+    $recipe_searchbar.addEventListener("input", e => {
+
+        let val = $recipe_searchbar.value;
+        if(val.length >= 3)
+        {
+            sort.search(val);
+        }
+        else {
+            sort.resetBlock();
+
+            let $tag = document.querySelector(".tag");
+
+            if($tag !== undefined)
+            {
+                sort.search();
+            }
+
+        }
+
+    });
+
+    let $dropdown_options = document.querySelectorAll("[data-tag-value]");
+
+    $dropdown_options.forEach($dropdown_option => {
+
+        $dropdown_option.addEventListener("click", e => {
+
+            if(e) e.preventDefault();
+
+            let val = ($recipe_searchbar.value.length >=3) ? $recipe_searchbar.value : "";
+
+            sort.search(val);
+
+        });
+
+    });
 
 });
