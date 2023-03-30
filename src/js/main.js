@@ -253,4 +253,22 @@ init().then(() => {
 
     });
 
+    document.addEventListener("click", e => {
+
+        // Tag click event listener
+        if(e.target && e.target.classList.contains("tag")) {
+
+            sort.resetBlock();
+
+            let $tag = document.querySelector(".tag");
+            if($tag !== undefined)
+            {
+                let val = ($recipe_searchbar.value.length >=3) ? $recipe_searchbar.value : "";
+                sort.search(val);
+            }
+
+        }
+
+    })
+
 });
