@@ -13,6 +13,7 @@ import {Autocomplete} from "./modules/Autocomplete";
 
 
 // Global variables
+
 /**
  * @type {SortData}
  */
@@ -22,6 +23,10 @@ async function getRecipes(){
 
     return new Promise((resolve) => {
 
+        /**
+         *
+         * @type {Promise}
+         */
         let fetcher = new JsonFetcher("./data/recipes.json");
 
         fetcher.then((res) => {
@@ -39,17 +44,12 @@ async function getRecipes(){
 function displayRecipes(recipes) {
 
     // We get the div container that will get all recipes article inserted into it
-    const $recipe_section = document.querySelector("#recipes-container");
+    const $recipe_section = document.querySelector(".recipe-line");
 
     // Setting all filters arrays
     let ingredients = [];
     let appliances = [];
     let ustensils = [];
-
-
-    let i = 0;
-    let $row = createElement("div", ["recipe-line", "row", "align-content-stretch", "gx-5", "gy-5", "mb-5"]);
-    $recipe_section.appendChild($row);
 
     recipes.forEach((recipe) => {
 
@@ -59,11 +59,9 @@ function displayRecipes(recipes) {
          * @type {Recipe}
          */
         const recipeModel = new Factory(recipe, "recipe");
-
         const recipeCardDOM = recipeModel.getRecipeCardDOM();
 
-        $row.appendChild(recipeCardDOM);
-
+        $recipe_section.appendChild(recipeCardDOM);
 
         // Filters array push
         if(recipe.hasOwnProperty("ingredients"))
@@ -109,8 +107,6 @@ function displayRecipes(recipes) {
             }
 
         }
-
-        i++;
 
     });
 
@@ -176,36 +172,9 @@ async function init()
 {
 
     let recipes = await getRecipes();
-    await displayRecipes(recipes);
+    displayRecipes(recipes);
 
-    // Always put required fields first
-    let searchParams = [
-        {
-            "target": ".tag",
-            "type": "html",
-            "options": {
-                "required": true
-            }
-        },
-        {
-            "key": "name",
-            "type": "string"
-        },
-        {
-            "key": "ingredients",
-            "type": "json",
-            "options": {
-                "json_key": "ingredient"
-            }
-        },
-        {
-            "key": "description",
-            "type": "string"
-        }
-
-    ];
-
-    sort = new SortData(recipes, searchParams, document.querySelector(".recipe-line"));
+    sort = new SortData(recipes, document.querySelector(".recipe-line"));
 
 }
 
@@ -213,62 +182,6 @@ init().then(() => {
 
     DropdownEvent.init();
     Autocomplete.initEvents();
-
-    let $recipe_searchbar = document.querySelector("#recipe-search");
-
-    $recipe_searchbar.addEventListener("input", e => {
-
-        let val = $recipe_searchbar.value;
-        if(val.length >= 3)
-        {
-            sort.search(val);
-        }
-        else {
-            sort.resetBlock();
-
-            let $tag = document.querySelector(".tag");
-
-            if($tag !== undefined)
-            {
-                sort.search();
-            }
-
-        }
-
-    });
-
-    let $dropdown_options = document.querySelectorAll("[data-tag-value]");
-
-    $dropdown_options.forEach($dropdown_option => {
-
-        $dropdown_option.addEventListener("click", e => {
-
-            if(e) e.preventDefault();
-
-            let val = ($recipe_searchbar.value.length >=3) ? $recipe_searchbar.value : "";
-
-            sort.search(val);
-
-        });
-
-    });
-
-    document.addEventListener("click", e => {
-
-        // Tag click event listener
-        if(e.target && e.target.classList.contains("tag")) {
-
-            sort.resetBlock();
-
-            let $tag = document.querySelector(".tag");
-            if($tag !== undefined)
-            {
-                let val = ($recipe_searchbar.value.length >=3) ? $recipe_searchbar.value : "";
-                sort.search(val);
-            }
-
-        }
-
-    })
+    SortData.initEvents(sort);
 
 });

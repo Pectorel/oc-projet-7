@@ -1,5 +1,10 @@
 class JsonFetcher {
 
+    /**
+     *
+     * @param path
+     * @returns {Promise<unknown>}
+     */
     constructor(path) {
 
         return new Promise((resolve) => {

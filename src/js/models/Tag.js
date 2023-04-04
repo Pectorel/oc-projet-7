@@ -11,7 +11,7 @@ class Tag {
 
     getTagDOM() {
 
-        let $tag = createElement("span", ["badge", "tag", this.data["type"]], this.data["name"]);
+        let $tag = createElement("span", ["badge", "tag", this.data["type"]], this.data["name"], {"data-search-type": this.data["type"]});
 
         $tag.addEventListener("click", e => {
 

@@ -5,160 +5,273 @@ class SortData {
      *
      * Initialize the search component
      *
-     * @param data {array}
-     * @param searchParams {Object}
-     * @param $container {HTMLElement}
+     * @param data {Array} - Dataset to search in
+     * @param $container {HTMLElement} - Contains all the block to hide or show based on search result
      */
-    constructor(data, searchParams, $container) {
-
+    constructor(data, $container) {
 
         this.data = data;
 
-        this.searchParams = searchParams;
-
         this.$container = $container;
-
+        // We get all the [data-search-block] HTMLElements to hide or show based on search result
         this.$blocks = this.$container.querySelectorAll("[data-search-block]");
 
     }
 
+
     /**
      *
-     * Search any element corresponding to given needle string
+     * Generates the Search Json Object to send to the search function
      *
-     * @param needle {string}
-     * @param display {boolean}
+     * @returns {Object}
      */
-    search(needle= "", display= true) {
+    generateSearchJson() {
 
-        this.show = [];
+        let res = {
+            "entries" : [],
+        };
 
-        for(let data_row of this.data)
+        // We get the searchbar value
+        let $searchbar = document.querySelector("#recipe-search");
+        let val = $searchbar.value;
+
+        // We check that our input has at least 3 characters
+        if(val.length >= 3)
         {
-            let res = false;
+            let search_obj = {
+                "value": val,
+                "type": "group",
+                "options" : {
+                    "nullable": true,
+                    "group_type": "or",
+                    "group" : [
+                        {
+                            "type": "string",
+                            "key": "name"
+                        },
+                        {
+                            "type": "json",
+                            "key": "ingredients",
+                            "options" : {
+                                "json_key": "ingredient"
+                            }
+                        },
+                        {
+                            "type": "string",
+                            "key": "description"
+                        }
+                    ]
+                }
+            };
 
-            for(let searchParam of this.searchParams)
+            res["entries"].push(search_obj);
+        }
+
+
+
+        // We get the tags
+        let $tags = document.querySelectorAll(".tag");
+
+        if($tags !== null)
+        {
+
+            for(let $tag of $tags)
             {
 
-                this.data_row = data_row;
-                this.searchParam = searchParam;
-                res = this._checkData(needle);
+                let type = $tag.getAttribute("data-search-type");
 
+                let search_obj = {};
 
-                if(!res) {
-                    // If option is required we break the loop and don't show the element
-                    if(this.searchParam["options"]){
-                        if(this.searchParam["options"]["required"]) break;
-                    }
+                // For each tags, we set the correct type to search in the database
+                switch (type) {
+                    case "ingredient":
+                        search_obj = {
+                            "type": "json",
+                            "key": "ingredients",
+                            "options" : {
+                                "json_key": "ingredient"
+                            }
+                        };
+                        break;
+                    case "appliance":
+                        search_obj = {
+                            "type": "string",
+                            "key": "appliance"
+                        };
+                        break;
+                    case "ustensil":
+                        search_obj = {
+                            "type": "array",
+                            "key": "ustensils"
+                        }
+                        break;
+                    default:
+                        search_obj = null;
+                        break;
                 }
-                // Else if found then break SearchParams loop (make sure all required checks have been made before)
-                else if(this.searchParam["type"] !== "html" || needle.length <= 0) {
-                    this.show.push(document.querySelector(`[data-recipe-id="${data_row["id"]}"]`))
-                    break;
-                }
 
+
+                if(search_obj !== null)
+                {
+                    search_obj["value"] = $tag.textContent;
+
+                    res["entries"].push(search_obj);
+                }
 
             }
 
         }
 
+        return res;
 
+    }
+
+    /**
+     *
+     * Search any element corresponding to given search Json Object
+     *
+     * @param search {Object}
+     * @param display {boolean}
+     */
+    search(search, display= true) {
+
+        // Initializing array that will contains all html elements reference to show
+        this.show = [];
+
+        for(let data_row of this.data)
+        {
+            let res = true;
+
+            for(let field of search["entries"])
+            {
+
+                this.data_row = data_row;
+                this.field = field;
+                res = this["_" + field["type"]]();
+
+                if(!res) break;
+
+
+            }
+
+            // If result is indeed in search
+            if(res)
+            {
+                // We push the block to the array containing all showable blocks
+                this.show.push(document.querySelector(`[data-recipe-id="${data_row["id"]}"]`));
+            }
+
+        }
+
+        // display the valid blocks
         if(display) this.display();
 
     }
 
     /**
      *
-     * Check if element is in given searchParam
+     * Check if string is equal or included
      *
-     * @param needle {String}
+     * @returns {boolean}
+     */
+    _string() {
+        let res = false;
+        let needle = this.field["value"].toLowerCase();
+
+        let val = this.data_row[this.field["key"]].toLowerCase();
+        if(this.field["options"] && this.field["options"]["equals"])
+        {
+            res = val === needle;
+        }
+        else
+        {
+            res = val.includes(needle);
+        }
+
+        return res;
+    }
+
+    /**
+     *
+     * check if string is included in json data
+     *
      * @returns {boolean}
      * @private
      */
-    _checkData(needle= "") {
+    _json() {
 
         let res = false;
-        if(needle.length > 0) needle = needle.toLowerCase();
+        let needle = this.field["value"].toLowerCase();
 
-        if(this.searchParam["type"] === "string")
+        let json_object = this.data_row[this.field["key"]];
+        for(let object of json_object)
         {
 
-            let val = this.data_row[this.searchParam["key"]].toLowerCase();
+            let val = object[this.field["options"]["json_key"]].toLowerCase();
             res = val.includes(needle);
 
+            if(res) break;
+
         }
-        else if(this.searchParam["type"] === "json")
+
+        return res;
+
+    }
+
+    /**
+     *
+     * check if data is included in array
+     *
+     * @returns {boolean}
+     * @private
+     */
+    _array() {
+
+        let res = false;
+        let needle = this.field["value"].toLowerCase();
+
+        for(let row of this.data_row[this.field["key"]])
         {
 
-            let json_object = this.data_row[this.searchParam["key"]];
+            let val = row.toLowerCase();
+            res = val.includes(needle);
 
-            for(let object of json_object)
+            if(res) break;
+
+        }
+
+        return res;
+
+    }
+
+    /**
+     *
+     * Make multiple checks with one value (can be "or" or "and")
+     *
+     * @returns {boolean}
+     * @private
+     */
+    _group() {
+
+        let res = false;
+
+        let fields = this.field;
+
+        for(let field of fields["options"]["group"])
+        {
+
+            field["value"] = fields["value"];
+
+            this.field = field;
+            res = this["_" + field["type"]]();
+
+            // If only one field in group needs to be valid
+            if(fields["options"]["group_type"] === "or")
             {
-
-                let val = object[this.searchParam["options"]["json_key"]].toLowerCase();
-                res = val.includes(needle);
-
                 if(res) break;
-
             }
-
-        }
-        else if(this.searchParam["type"] === "html")
-        {
-
-            let $targets = document.querySelectorAll(this.searchParam["target"]);
-
-            // If no tags has been selected, then we bypass the check
-            if($targets.length <= 0 ) {
-                res = true;
-            }
-            else{
-                for(let $target of $targets)
-                {
-
-                    let needle = $target.textContent.toLowerCase();
-
-
-                    if($target.classList.contains("ingredient"))
-                    {
-
-                        for (let ingredient of this.data_row["ingredients"])
-                        {
-
-                            //debugger;
-                            let comp = ingredient["ingredient"].toLowerCase()
-                            res = comp.includes(needle);
-                            if(res)
-                            {
-                                break;
-                            }
-
-                        }
-
-
-                    }
-                    else if($target.classList.contains("appliance"))
-                    {
-
-                        res = this.data_row["appliance"].toLowerCase().includes(needle);
-
-                    }
-                    else if($target.classList.contains("ustensil"))
-                    {
-
-                        for (let ustensil of this.data_row["ustensils"])
-                        {
-                            res = ustensil.toLowerCase().includes(needle);
-                            if(res) break;
-                        }
-
-                    }
-
-                    // If at least one element is not present, then we break the loop
-                    if(!res) break;
-
-                }
-            }
+            // Else if every field have to be valid, we break at doon as the string is not found
+            else if(!res) break;
 
 
         }
@@ -167,6 +280,11 @@ class SortData {
 
     }
 
+    /**
+     *
+     * Display all blocks based on search result
+     *
+     */
     display() {
 
         for(let $block of this.$blocks)
@@ -183,6 +301,11 @@ class SortData {
 
     }
 
+    /**
+     *
+     * Show all blocks
+     *
+     */
     resetBlock() {
 
         for(let $block of this.$blocks)
@@ -190,6 +313,83 @@ class SortData {
             $block.classList.remove("d-none");
         }
 
+    }
+
+    /**
+     *
+     * Init all EventListeners using the sort object
+     *
+     * @param sort
+     */
+    static initEvents(sort)
+    {
+        let $recipe_searchbar = document.querySelector("#recipe-search");
+
+        $recipe_searchbar.addEventListener("input", e => {
+
+            // We check that at least 3 characters are in the input
+            let val = $recipe_searchbar.value;
+            if(val.length >= 3)
+            {
+                let search = sort.generateSearchJson();
+                sort.search(search);
+            }
+            else {
+
+                // We check if there are search parameters still
+                let search = sort.generateSearchJson();
+
+                // If yes, then we do the search
+                if(search["entries"].length > 0)
+                {
+                    sort.search(search);
+                }
+                // Else we reset the display
+                else
+                {
+                    sort.resetBlock();
+                }
+
+            }
+
+        });
+
+        let $dropdown_options = document.querySelectorAll("[data-tag-value]");
+
+        $dropdown_options.forEach($dropdown_option => {
+
+            $dropdown_option.addEventListener("click", e => {
+
+                if(e) e.preventDefault();
+
+                let search = sort.generateSearchJson();
+                sort.search(search);
+
+            });
+
+        });
+
+        document.addEventListener("click", e => {
+
+            // Tag click event listener
+            if(e.target && e.target.classList.contains("tag")) {
+
+
+
+                let search =  sort.generateSearchJson();
+                if(search["entries"].length > 0)
+                {
+                    sort.search(search);
+                }
+                else
+                {
+                    sort.resetBlock();
+                }
+
+
+            }
+
+        });
     }
 
 }
