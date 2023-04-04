@@ -6,10 +6,9 @@ import * as bootstrap from 'bootstrap';
 // Custom Imports
 import {JsonFetcher} from "./modules/JsonFetcher";
 import {Factory} from "./factories/Factory";
-import {createElement} from "./modules/createElement";
 import * as DropdownEvent from "./modules/dropdownEvents";
 import {SortData} from "./modules/SortData";
-import {Autocomplete} from "./modules/Autocomplete";
+import {auto} from "@popperjs/core";
 
 
 // Global variables
@@ -18,6 +17,11 @@ import {Autocomplete} from "./modules/Autocomplete";
  * @type {SortData}
  */
 let sort;
+
+/**
+ * @type {Object}
+ */
+let tags;
 
 async function getRecipes(){
 
@@ -41,15 +45,29 @@ async function getRecipes(){
 
 }
 
-function displayRecipes(recipes) {
+async function displayRecipes(recipes) {
 
     // We get the div container that will get all recipes article inserted into it
     const $recipe_section = document.querySelector(".recipe-line");
 
     // Setting all filters arrays
-    let ingredients = [];
-    let appliances = [];
-    let ustensils = [];
+    let tag_dropdowns = {
+        "ingredients" : {
+            "entries" : [],
+            "container" : document.querySelector(".ingredients .dropdown-menu"),
+        },
+        "appliances" : {
+            "entries" : [],
+            "container" : document.querySelector(".appliance .dropdown-menu"),
+        },
+        "ustensils" : {
+            "entries" : [],
+            "container" : document.querySelector(".ustensils .dropdown-menu"),
+        }
+    }
+    let k = 0;
+    let i = 0;
+    let l = 0;
 
     recipes.forEach((recipe) => {
 
@@ -71,9 +89,22 @@ function displayRecipes(recipes) {
             {
                 let ingredient = recipe["ingredients"][j];
 
-                if(!ingredients.includes(ingredient["ingredient"].toLowerCase()))
+                if(!tag_dropdowns.ingredients.entries.some(item => item.name.includes(ingredient["ingredient"].toLowerCase())))
                 {
-                    ingredients.push(ingredient["ingredient"].toLowerCase());
+                    let name = ingredient["ingredient"].toLowerCase();
+                    tag_dropdowns.ingredients.entries.push({"name" : name});
+
+                    /**
+                     *
+                     * @type {DropdownOption}
+                     */
+                    let dropdownModel = new Factory({"name": name, "type": "ingredient"}, "dropdown");
+
+                    let $option = dropdownModel.getDropdownOptionDOM();
+                    if(k >= 30) $option.classList.add("d-none");
+                    tag_dropdowns.ingredients.container.appendChild($option);
+
+                    k++;
                 }
 
             }
@@ -84,9 +115,22 @@ function displayRecipes(recipes) {
         if(recipe.hasOwnProperty("appliance"))
         {
 
-            if(!appliances.includes(recipe["appliance"].toLowerCase()))
+            if(!tag_dropdowns.appliances.entries.some(item => item.name.includes(recipe["appliance"].toLowerCase())))
             {
-                appliances.push(recipe["appliance"].toLowerCase());
+                let name = recipe["appliance"].toLowerCase();
+                tag_dropdowns.appliances.entries.push({"name": name});
+
+                /**
+                 *
+                 * @type {DropdownOption}
+                 */
+                let dropdownModel = new Factory({"name": name, "type": "appliance"}, "dropdown");
+
+                let $option = dropdownModel.getDropdownOptionDOM();
+                if(i >= 30) $option.classList.add("d-none");
+                tag_dropdowns.appliances.container.appendChild($option);
+
+                i++;
             }
 
         }
@@ -99,9 +143,23 @@ function displayRecipes(recipes) {
             {
                 let ustensil = recipe["ustensils"][j];
 
-                if(!ustensils.includes(ustensil.toLowerCase()))
+                if(!tag_dropdowns.ustensils.entries.some(item => item.name.includes(ustensil.toLowerCase())))
                 {
-                    ustensils.push(ustensil.toLowerCase());
+                    let name = ustensil.toLowerCase();
+                    tag_dropdowns.ustensils.entries.push({"name": name});
+
+                    /**
+                     *
+                     * @type {DropdownOption}
+                     */
+                    let dropdownModel = new Factory({"name": ustensil, "type": "ustensil"}, "dropdown");
+
+                    let $option = dropdownModel.getDropdownOptionDOM();
+                    if(l >= 30) $option.classList.add("d-none");
+                    tag_dropdowns.ustensils.container.appendChild($option);
+
+                    l++;
+
                 }
 
             }
@@ -110,61 +168,7 @@ function displayRecipes(recipes) {
 
     });
 
-
-    // We create the dropdowns DOM options
-    let $ingredient_dropdown = document.querySelector(".ingredients .dropdown-menu");
-
-    let k = 0;
-
-    for(const ingredient of ingredients) {
-        /**
-         *
-         * @type {DropdownOption}
-         */
-        let dropdownModel = new Factory({"name": ingredient, "type": "ingredient"}, "dropdown");
-
-        let $option = dropdownModel.getDropdownOptionDOM();
-        if(k >= 30) $option.classList.add("d-none");
-        $ingredient_dropdown.appendChild($option);
-
-        k++;
-    }
-
-    // Appliances
-    let $appliance_dropdown = document.querySelector(".appliance .dropdown-menu");
-    k = 0;
-    for(const appliance of appliances) {
-
-        /**
-         *
-         * @type {DropdownOption}
-         */
-        let dropdownModel = new Factory({"name": appliance, "type": "appliance"}, "dropdown");
-
-        let $option = dropdownModel.getDropdownOptionDOM();
-        if(k >= 30) $option.classList.add("d-none");
-        $appliance_dropdown.appendChild($option);
-
-        k++;
-    }
-
-    // Ustensils
-    let $ustensils_dropdown = document.querySelector(".ustensils .dropdown-menu");
-    k = 0;
-    for(const ustensil of ustensils) {
-
-        /**
-         *
-         * @type {DropdownOption}
-         */
-        let dropdownModel = new Factory({"name": ustensil, "type": "ustensil"}, "dropdown");
-
-        let $option = dropdownModel.getDropdownOptionDOM();
-        if(k >= 30) $option.classList.add("d-none");
-        $ustensils_dropdown.appendChild($option);
-
-        k++;
-    }
+    return tag_dropdowns;
 
 }
 
@@ -172,16 +176,53 @@ async function init()
 {
 
     let recipes = await getRecipes();
-    displayRecipes(recipes);
-
+    tags = await displayRecipes(recipes);
     sort = new SortData(recipes, document.querySelector(".recipe-line"));
+
 
 }
 
 init().then(() => {
 
     DropdownEvent.init();
-    Autocomplete.initEvents();
     SortData.initEvents(sort);
+
+    // Autocomplete tags
+    let $autocompletes = document.querySelectorAll("[data-autocomplete]");
+    $autocompletes.forEach(($elem) => {
+
+        let type = $elem.getAttribute("data-autocomplete");
+        let data = tags[type].entries;
+        let autocomplete = new SortData(data, tags[type].container);
+
+        $elem.addEventListener("input", (e) => {
+
+            if($elem.textContent.length > 0)
+            {
+                let search = {
+                    "entries" : [
+                        {
+                            "value": $elem.textContent,
+                            "type": "string",
+                            "key": "name"
+                        }
+                    ],
+                    "key": "name"
+                };
+
+                autocomplete.search(search);
+            }
+            else {
+                autocomplete.resetBlock(30);
+            }
+
+        });
+
+        $elem.closest("[data-bs-toggle=\"dropdown\"]").addEventListener("hidden.bs.dropdown", (e) => {
+            
+            autocomplete.resetBlock(30);
+        });
+
+    });
 
 });

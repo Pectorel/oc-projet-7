@@ -23,12 +23,15 @@ class SortData {
      *
      * Generates the Search Json Object to send to the search function
      *
+     * @param key {string} - Indicates which key is used in json data to find the corresponding block on DOM with data-search-block value
+     *
      * @returns {Object}
      */
-    generateSearchJson() {
+    generateSearchJson(key = "id") {
 
         let res = {
             "entries" : [],
+            "key" : key
         };
 
         // We get the searchbar value
@@ -158,7 +161,7 @@ class SortData {
             if(res)
             {
                 // We push the block to the array containing all showable blocks
-                this.show.push(document.querySelector(`[data-recipe-id="${data_row["id"]}"]`));
+                this.show.push(document.querySelector(`[data-search-block="${data_row[search["key"]]}"]`));
             }
 
         }
@@ -173,9 +176,11 @@ class SortData {
      * Check if string is equal or included
      *
      * @returns {boolean}
+     * @private
      */
     _string() {
-        let res = false;
+
+        let res;
         let needle = this.field["value"].toLowerCase();
 
         let val = this.data_row[this.field["key"]].toLowerCase();
@@ -254,15 +259,18 @@ class SortData {
     _group() {
 
         let res = false;
-
         let fields = this.field;
 
+        // for all fields in group
         for(let field of fields["options"]["group"])
         {
 
+            // We put the value inside the field json object (this way we don't have to write it for every check inside a group)
             field["value"] = fields["value"];
 
+            // we change the current field to match the field inside the group
             this.field = field;
+            // We call the corresponding method
             res = this["_" + field["type"]]();
 
             // If only one field in group needs to be valid
@@ -306,20 +314,34 @@ class SortData {
      * Show all blocks
      *
      */
-    resetBlock() {
+    resetBlock(limit = null) {
 
+        // If a limit is set, then we hide every block before showing them
+        if(limit)
+        {
+            for(let $block of this.$blocks)
+            {
+                $block.classList.add("d-none");
+            }
+        }
+
+        let i = 0;
         for(let $block of this.$blocks)
         {
+            if(limit !== null && i >= limit) break;
+
             $block.classList.remove("d-none");
+
+            i++
         }
 
     }
 
     /**
      *
-     * Init all EventListeners using the sort object
+     * Init all EventListeners related to the SortData Object
      *
-     * @param sort
+     * @param sort {SortData}
      */
     static initEvents(sort)
     {

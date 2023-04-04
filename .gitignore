@@ -1,4 +1,7 @@
 # Ignoring webpack created files
 /dist/*.js
 /dist/*.css
-/dist/a0ca7289685e67d2b987.png
+/dist/*.png
+/dist/*.jpg
+/dist/*.jpeg
+/dist/*.gif

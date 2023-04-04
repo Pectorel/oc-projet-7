@@ -11,7 +11,7 @@ class Factory {
      *
      * @param data
      * @param type
-     * @returns {Recipe | Dropdown | null}
+     * @returns {Recipe | DropdownOption | Tag | null}
      */
     constructor(data, type) {
 

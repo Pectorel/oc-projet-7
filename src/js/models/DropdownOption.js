@@ -9,8 +9,8 @@ class DropdownOption {
 
     getDropdownOptionDOM() {
 
-        let $option = createElement("li", null, null, {"data-autocomplete-display-target": ""});
-        let $link = createElement("a", null, this.data["name"], {"href": "#", "data-tag-value": this.data["name"], "data-tag-type": this.data["type"], "data-autocomplete-option": ""});
+        let $option = createElement("li", null, null, {"data-search-block": this.data["name"]});
+        let $link = createElement("a", null, this.data["name"], {"href": "#", "data-tag-value": this.data["name"], "data-tag-type": this.data["type"]});
         $option.appendChild($link);
 
         $link.addEventListener("click", e => {
