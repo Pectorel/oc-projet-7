@@ -16,7 +16,14 @@ class Tag {
         $tag.addEventListener("click", e => {
 
            if(e) e.preventDefault();
+
+           let $targets = document.querySelectorAll("[data-tag-value=\"" + $tag.textContent + "\"]");
            $tag.remove();
+           $targets.forEach(($elem) => {
+
+               $elem.parentElement.classList.remove("selected");
+
+           });
 
         });
 

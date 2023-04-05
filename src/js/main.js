@@ -2,13 +2,13 @@
 import '../scss/style.scss'
 // Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap';
+import {auto} from "@popperjs/core";
 
 // Custom Imports
 import {JsonFetcher} from "./modules/JsonFetcher";
 import {Factory} from "./factories/Factory";
-import * as DropdownEvent from "./modules/dropdownEvents";
 import {SortData} from "./modules/SortData";
-import {auto} from "@popperjs/core";
+import {DropdownOption} from "./models/DropdownOption";
 
 
 // Global variables
@@ -184,45 +184,7 @@ async function init()
 
 init().then(() => {
 
-    DropdownEvent.init();
-    SortData.initEvents(sort);
-
-    // Autocomplete tags
-    let $autocompletes = document.querySelectorAll("[data-autocomplete]");
-    $autocompletes.forEach(($elem) => {
-
-        let type = $elem.getAttribute("data-autocomplete");
-        let data = tags[type].entries;
-        let autocomplete = new SortData(data, tags[type].container);
-
-        $elem.addEventListener("input", (e) => {
-
-            if($elem.textContent.length > 0)
-            {
-                let search = {
-                    "entries" : [
-                        {
-                            "value": $elem.textContent,
-                            "type": "string",
-                            "key": "name"
-                        }
-                    ],
-                    "key": "name"
-                };
-
-                autocomplete.search(search);
-            }
-            else {
-                autocomplete.resetBlock(30);
-            }
-
-        });
-
-        $elem.closest("[data-bs-toggle=\"dropdown\"]").addEventListener("hidden.bs.dropdown", (e) => {
-            
-            autocomplete.resetBlock(30);
-        });
-
-    });
+    DropdownOption.initEvents();
+    SortData.initEvents(sort, tags);
 
 });

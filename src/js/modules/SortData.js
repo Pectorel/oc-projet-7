@@ -342,9 +342,9 @@ class SortData {
      * Init all EventListeners related to the SortData Object
      *
      * @param sort {SortData}
+     * @param tags {Array}
      */
-    static initEvents(sort)
-    {
+    static initEvents(sort, tags) {
         let $recipe_searchbar = document.querySelector("#recipe-search");
 
         $recipe_searchbar.addEventListener("input", e => {
@@ -412,6 +412,56 @@ class SortData {
             }
 
         });
+
+        this.initAutocompleteEvents(tags);
+    }
+
+    /**
+     *
+     * Initialize autocomplete dropdowns events
+     *
+     * @param tags {Array}
+     */
+    static initAutocompleteEvents(tags) {
+
+        // Autocomplete tags
+        let $autocompletes = document.querySelectorAll("[data-autocomplete]");
+        $autocompletes.forEach(($elem) => {
+
+            let type = $elem.getAttribute("data-autocomplete");
+            let data = tags[type].entries;
+            let autocomplete = new SortData(data, tags[type].container);
+
+            $elem.addEventListener("input", (e) => {
+
+                if($elem.textContent.length > 0)
+                {
+                    let search = {
+                        "entries" : [
+                            {
+                                "value": $elem.textContent,
+                                "type": "string",
+                                "key": "name"
+                            }
+                        ],
+                        "key": "name"
+                    };
+
+                    autocomplete.search(search);
+                }
+                else {
+                    autocomplete.resetBlock(30);
+                }
+
+            });
+
+            $elem.closest("[data-bs-toggle=\"dropdown\"]").addEventListener("hidden.bs.dropdown", (e) => {
+
+                autocomplete.resetBlock(30);
+            });
+
+        });
+
     }
 
 }
