@@ -313,6 +313,8 @@ class SortData {
      *
      * Show all blocks
      *
+     * @param limit {int | null}
+     *
      */
     resetBlock(limit = null) {
 
