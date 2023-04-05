@@ -125,9 +125,12 @@
 // Recipe list
 #recipes-container{
 
-  .recipe-line{
+  #no-recipe-found{
 
+    font-size: 1.4rem;
+    .error-message{
 
+    }
 
   }
 

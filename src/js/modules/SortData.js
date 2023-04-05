@@ -25,14 +25,20 @@ class SortData {
      *
      * @param key {string} - Indicates which key is used in json data to find the corresponding block on DOM with data-search-block value
      *
+     * @param $no_match_container {HTMLElement}
      * @returns {Object}
      */
-    generateSearchJson(key = "id") {
+    generateSearchJson(key = "id", $no_match_container = document.querySelector("#no-recipe-found")) {
 
         let res = {
             "entries" : [],
             "key" : key
         };
+
+        if($no_match_container !== null)
+        {
+            res["no-match-container"] = $no_match_container;
+        }
 
         // We get the searchbar value
         let $searchbar = document.querySelector("#recipe-search");
@@ -140,6 +146,7 @@ class SortData {
 
         // Initializing array that will contains all html elements reference to show
         this.show = [];
+        this.search_data = search;
 
         for(let data_row of this.data)
         {
@@ -307,6 +314,12 @@ class SortData {
 
         }
 
+        if(this.search_data["no-match-container"])
+        {
+            if(this.show.length <= 0) this.search_data["no-match-container"].classList.remove("d-none");
+            else this.search_data["no-match-container"].classList.add("d-none");
+        }
+
     }
 
     /**
@@ -335,6 +348,12 @@ class SortData {
             $block.classList.remove("d-none");
 
             i++
+        }
+
+        // If there is a no-match-container, then we hide it
+        if(this.search_data && this.search_data["no-match-container"])
+        {
+            this.search_data["no-match-container"].classList.add("d-none");
         }
 
     }

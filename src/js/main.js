@@ -89,7 +89,7 @@ async function displayRecipes(recipes) {
             {
                 let ingredient = recipe["ingredients"][j];
 
-                if(!tag_dropdowns.ingredients.entries.some(item => item.name.includes(ingredient["ingredient"].toLowerCase())))
+                if(!tag_dropdowns.ingredients.entries.some(item => item.name === ingredient["ingredient"].toLowerCase()))
                 {
                     let name = ingredient["ingredient"].toLowerCase();
                     tag_dropdowns.ingredients.entries.push({"name" : name});
