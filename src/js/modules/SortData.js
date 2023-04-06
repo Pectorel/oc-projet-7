@@ -173,18 +173,16 @@ class SortData {
         this.data.forEach((data_row) => {
             let res = true;
 
-            for(let field of search["entries"])
-            {
+            search["entries"].forEach((field) => {
+
+                if(!res) return;
 
                 this.data_row = data_row;
                 this.field = field;
                 this.field["value"] = this.field["value"].toLowerCase();
                 res = this["_" + field["type"]]();
 
-                if(!res) break;
-
-
-            }
+            });
 
             // If result is indeed in search
             if(res)
