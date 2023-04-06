@@ -18,11 +18,9 @@ class SortData {
         this.$blocks = this.$container.querySelectorAll("[data-search-block]");
 
         this.events = {
-
             "search": new CustomEvent("search", {detail: {instance: this}}),
             "reset": new CustomEvent("reset", {detail: {instance: this}}),
             "display": new CustomEvent("display", {detail: {instance: this}})
-
         };
 
         // Generate dynamic attributes if given in constructor
@@ -116,20 +114,27 @@ class SortData {
                             "type": "json",
                             "key": "ingredients",
                             "options" : {
-                                "json_key": "ingredient"
+                                "json_key": "ingredient",
+                                "equals": true
                             }
                         };
                         break;
                     case "appliance":
                         search_obj = {
                             "type": "string",
-                            "key": "appliance"
+                            "key": "appliance",
+                            "options": {
+                                "equals": true
+                            }
                         };
                         break;
                     case "ustensil":
                         search_obj = {
                             "type": "array",
-                            "key": "ustensils"
+                            "key": "ustensils",
+                            "options": {
+                                "equals": true
+                            }
                         }
                         break;
                     default:
@@ -214,14 +219,7 @@ class SortData {
         let res;
 
         let val = this.data_row[this.field["key"]].toLowerCase();
-        if(this.field["options"] && this.field["options"]["equals"])
-        {
-            res = val === this.field["value"];
-        }
-        else
-        {
-            res = val.includes(this.field["value"]);
-        }
+        res = this.field["options"] && this.field["options"]["equals"] ? val === this.field["value"] : val.includes(this.field["value"]);
 
         return res;
     }
@@ -242,7 +240,7 @@ class SortData {
         {
 
             let val = object[this.field["options"]["json_key"]].toLowerCase();
-            res = val.includes(this.field["value"]);
+            res = this.field["options"] && this.field["options"]["equals"] ? val === this.field["value"] : val.includes(this.field["value"]);
 
             if(res) break;
 
@@ -267,7 +265,7 @@ class SortData {
         {
 
             let val = row.toLowerCase();
-            res = val.includes(this.field["value"]);
+            res = this.field["options"] && this.field["options"]["equals"] ? val === this.field["value"] : val.includes(this.field["value"]);
 
             if(res) break;
 
@@ -459,7 +457,8 @@ class SortData {
 
         });
 
-        if(autocomplete) this.initAutocompleteEvents(tags);
+        if(autocomplete) return this.initAutocompleteEvents(tags);
+        else return [sort];
     }
 
     /**
@@ -470,6 +469,7 @@ class SortData {
      */
     static initAutocompleteEvents(tags) {
 
+        let res = [];
         // Autocomplete tags
         let $autocompletes = document.querySelectorAll("[data-autocomplete]");
         $autocompletes.forEach(($elem) => {
@@ -477,6 +477,7 @@ class SortData {
             let type = $elem.getAttribute("data-autocomplete");
             let data = tags[type].entries;
             let autocomplete = new SortData(data, tags[type].container, {"name": "dropdown"});
+            res.push(autocomplete);
 
             $elem.addEventListener("input", (e) => {
 
@@ -487,7 +488,7 @@ class SortData {
                             {
                                 "value": $elem.textContent,
                                 "type": "string",
-                                "key": "name"
+                                "key": "name",
                             }
                         ],
                         "key": "name"
@@ -502,11 +503,12 @@ class SortData {
             });
 
             $elem.closest("[data-bs-toggle=\"dropdown\"]").addEventListener("hidden.bs.dropdown", (e) => {
-
                 autocomplete.resetBlock(30);
             });
 
         });
+
+        return res;
 
     }
 

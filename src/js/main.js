@@ -186,8 +186,8 @@ async function init()
 init().then(() => {
 
     DropdownOption.initEvents(sort);
-    SortData.initEvents(sort, tags);
-    CustomEvents.init(sort);
+    let autocompletes = SortData.initEvents(sort, tags);
+    CustomEvents.init(sort, autocompletes);
 
 
 });

@@ -3,12 +3,12 @@
  * Initialize custom events
  *
  * @param sort {SortData}
+ * @param autocompletes {[SortData]}
  */
-function init(sort) {
+function init(sort, autocompletes) {
 
     // When a search has been done
     document.addEventListener("search", e => {
-
 
         if(e.detail) {
             let details = e.detail;
@@ -124,9 +124,18 @@ function init(sort) {
                     $elem.classList.remove("not-in-recipe");
                 }
 
+                // We reset all autocompletes blocks
+                for(let autocomplete of autocompletes)
+                {
+
+                    autocomplete.resetBlock(30);
+
+                }
+
             }
             else if(instance.options && instance.options.name === "dropdown")
             {
+                // If dropdown is reset, then we search again to prevent some "d-none" block to be hidden but in recipe
                 let search = sort.generateSearchJson();
                 if(search["entries"].length > 0)
                 {
@@ -134,7 +143,6 @@ function init(sort) {
                 }
 
             }
-
 
         }
 
