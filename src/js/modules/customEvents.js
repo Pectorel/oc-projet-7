@@ -84,15 +84,6 @@ function init(sort, autocompletes) {
 
                 }
 
-
-                // We add the quick fix class on dropdown
-                let $dropdown_menus = document.querySelectorAll("#tag-btn-container .dropdown-menu");
-
-                for(let $dropdown_menu of $dropdown_menus)
-                {
-                    $dropdown_menu.classList.add("search-fix");
-                }
-
             }
 
         }
@@ -108,14 +99,6 @@ function init(sort, autocompletes) {
 
             if(instance.options && instance.options.name === "main-search")
             {
-
-                // We remove the quick fix on dropdown
-                let $dropdown_menus = document.querySelectorAll("#tag-btn-container .dropdown-menu");
-
-                for(let $dropdown_menu of $dropdown_menus)
-                {
-                    $dropdown_menu.classList.remove("search-fix");
-                }
 
                 // We remove the not-in-recipe class since the search is resetted
                 let $not_in_recipes = document.querySelectorAll(".not-in-recipe");
