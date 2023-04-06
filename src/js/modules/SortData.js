@@ -14,6 +14,7 @@ class SortData {
         this.data = data;
 
         this.$container = $container;
+
         // We get all the [data-search-block] HTMLElements to hide or show based on search result
         this.$blocks = this.$container.querySelectorAll("[data-search-block]");
 
@@ -100,9 +101,7 @@ class SortData {
         if($tags !== null)
         {
 
-            for(let $tag of $tags)
-            {
-
+            $tags.forEach(($tag) => {
                 let type = $tag.getAttribute("data-search-type");
 
                 let search_obj = {};
@@ -146,11 +145,9 @@ class SortData {
                 if(search_obj !== null)
                 {
                     search_obj["value"] = $tag.textContent;
-
                     res["entries"].push(search_obj);
                 }
-
-            }
+            });
 
         }
 
@@ -172,8 +169,8 @@ class SortData {
         this.search_result = [];
         this.search_data = search;
 
-        for(let data_row of this.data)
-        {
+
+        this.data.forEach((data_row) => {
             let res = true;
 
             for(let field of search["entries"])
@@ -197,8 +194,7 @@ class SortData {
                 // We push the result data inside an array
                 this.search_result.push(this.data_row);
             }
-
-        }
+        });
 
         // display the valid blocks
         if(display) this.display();
@@ -236,15 +232,15 @@ class SortData {
         let res = false;
 
         let json_object = this.data_row[this.field["key"]];
-        for(let object of json_object)
-        {
+
+        json_object.forEach((object) => {
 
             let val = object[this.field["options"]["json_key"]].toLowerCase();
             res = this.field["options"] && this.field["options"]["equals"] ? val === this.field["value"] : val.includes(this.field["value"]);
 
-            if(res) break;
+            if(res) return;
 
-        }
+        });
 
         return res;
 
@@ -261,15 +257,14 @@ class SortData {
 
         let res = false;
 
-        for(let row of this.data_row[this.field["key"]])
-        {
+        this.data_row[this.field["key"]].forEach((row) => {
 
             let val = row.toLowerCase();
             res = this.field["options"] && this.field["options"]["equals"] ? val === this.field["value"] : val.includes(this.field["value"]);
 
-            if(res) break;
+            if(res) return;
 
-        }
+        });
 
         return res;
 
@@ -288,8 +283,15 @@ class SortData {
         let fields = this.field;
 
         // for all fields in group
-        for(let field of fields["options"]["group"])
-        {
+        fields["options"]["group"].forEach((field) => {
+
+            // If only one field in group needs to be valid
+            if(fields["options"]["group_type"] === "or")
+            {
+                if(res) return;
+            }
+            // Else if every field have to be valid, we break at doon as the string is not found
+            else if(!res) return;
 
             // We put the value inside the field json object (this way we don't have to write it for every check inside a group)
             field["value"] = fields["value"];
@@ -299,16 +301,7 @@ class SortData {
             // We call the corresponding method
             res = this["_" + field["type"]]();
 
-            // If only one field in group needs to be valid
-            if(fields["options"]["group_type"] === "or")
-            {
-                if(res) break;
-            }
-            // Else if every field have to be valid, we break at doon as the string is not found
-            else if(!res) break;
-
-
-        }
+        });
 
         return res;
 
@@ -321,17 +314,14 @@ class SortData {
      */
     display() {
 
-        for(let $block of this.$blocks)
-        {
-
+        this.$blocks.forEach(($block) => {
             $block.classList.add("d-none");
 
             if(this.show.includes($block))
             {
                 $block.classList.remove("d-none");
             }
-
-        }
+        });
 
         if(this.search_data["no-match-container"])
         {
@@ -355,21 +345,17 @@ class SortData {
         // If a limit is set, then we hide every block before showing them
         if(limit)
         {
-            for(let $block of this.$blocks)
-            {
+            this.$blocks.forEach(($block) => {
                 $block.classList.add("d-none");
-            }
+            });
         }
 
         let i = 0;
-        for(let $block of this.$blocks)
-        {
-            if(limit !== null && i >= limit) break;
-
+        this.$blocks.forEach(($block) => {
+            if(limit !== null && i >= limit) return;
             $block.classList.remove("d-none");
-
-            i++
-        }
+            i++;
+        });
 
         // If there is a no-match-container, then we hide it
         if(this.search_data && this.search_data["no-match-container"])

@@ -127,9 +127,6 @@ class DropdownOption {
             });
         });
 
-        // Prevent click to be triggered by spacebar on dropdowns
-
-
     }
 
 }
