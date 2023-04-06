@@ -17,13 +17,14 @@ class Tag {
 
            if(e) e.preventDefault();
 
+           // We get all selected option related to the tag
            let $targets = document.querySelectorAll("[data-tag-value=\"" + $tag.textContent + "\"]");
-           $tag.remove();
+           // We remove the selected class on their parent that hides them
            $targets.forEach(($elem) => {
-
                $elem.parentElement.classList.remove("selected");
-
            });
+
+           $tag.remove();
 
         });
 

@@ -7,14 +7,33 @@ class SortData {
      *
      * @param data {Array} - Dataset to search in
      * @param $container {HTMLElement} - Contains all the block to hide or show based on search result
+     * @param options {Object}
      */
-    constructor(data, $container) {
+    constructor(data, $container, options = {}) {
 
         this.data = data;
 
         this.$container = $container;
         // We get all the [data-search-block] HTMLElements to hide or show based on search result
         this.$blocks = this.$container.querySelectorAll("[data-search-block]");
+
+        this.events = {
+
+            "search": new CustomEvent("search", {detail: {instance: this}}),
+            "reset": new CustomEvent("reset", {detail: {instance: this}}),
+            "display": new CustomEvent("display", {detail: {instance: this}})
+
+        };
+
+        // Generate dynamic attributes if given in constructor
+        if(typeof options === "object" && Object.keys(options).length > 0)
+        {
+            this.options = {};
+            for(let option in options)
+            {
+                this.options[option] = options[option];
+            }
+        }
 
     }
 
@@ -24,7 +43,6 @@ class SortData {
      * Generates the Search Json Object to send to the search function
      *
      * @param key {string} - Indicates which key is used in json data to find the corresponding block on DOM with data-search-block value
-     *
      * @param $no_match_container {HTMLElement}
      * @returns {Object}
      */
@@ -146,6 +164,7 @@ class SortData {
 
         // Initializing array that will contains all html elements reference to show
         this.show = [];
+        this.search_result = [];
         this.search_data = search;
 
         for(let data_row of this.data)
@@ -157,6 +176,7 @@ class SortData {
 
                 this.data_row = data_row;
                 this.field = field;
+                this.field["value"] = this.field["value"].toLowerCase();
                 res = this["_" + field["type"]]();
 
                 if(!res) break;
@@ -169,12 +189,16 @@ class SortData {
             {
                 // We push the block to the array containing all showable blocks
                 this.show.push(document.querySelector(`[data-search-block="${data_row[search["key"]]}"]`));
+                // We push the result data inside an array
+                this.search_result.push(this.data_row);
             }
 
         }
 
         // display the valid blocks
         if(display) this.display();
+
+        document.dispatchEvent(this.events.search);
 
     }
 
@@ -188,16 +212,15 @@ class SortData {
     _string() {
 
         let res;
-        let needle = this.field["value"].toLowerCase();
 
         let val = this.data_row[this.field["key"]].toLowerCase();
         if(this.field["options"] && this.field["options"]["equals"])
         {
-            res = val === needle;
+            res = val === this.field["value"];
         }
         else
         {
-            res = val.includes(needle);
+            res = val.includes(this.field["value"]);
         }
 
         return res;
@@ -213,14 +236,13 @@ class SortData {
     _json() {
 
         let res = false;
-        let needle = this.field["value"].toLowerCase();
 
         let json_object = this.data_row[this.field["key"]];
         for(let object of json_object)
         {
 
             let val = object[this.field["options"]["json_key"]].toLowerCase();
-            res = val.includes(needle);
+            res = val.includes(this.field["value"]);
 
             if(res) break;
 
@@ -240,13 +262,12 @@ class SortData {
     _array() {
 
         let res = false;
-        let needle = this.field["value"].toLowerCase();
 
         for(let row of this.data_row[this.field["key"]])
         {
 
             let val = row.toLowerCase();
-            res = val.includes(needle);
+            res = val.includes(this.field["value"]);
 
             if(res) break;
 
@@ -320,6 +341,8 @@ class SortData {
             else this.search_data["no-match-container"].classList.add("d-none");
         }
 
+        document.dispatchEvent(this.events.display);
+
     }
 
     /**
@@ -356,6 +379,8 @@ class SortData {
             this.search_data["no-match-container"].classList.add("d-none");
         }
 
+        document.dispatchEvent(this.events.reset);
+
     }
 
     /**
@@ -363,9 +388,11 @@ class SortData {
      * Init all EventListeners related to the SortData Object
      *
      * @param sort {SortData}
-     * @param tags {Array}
+     * @param tags {Object}
+     * @param autocomplete {boolean}
      */
-    static initEvents(sort, tags) {
+    static initEvents(sort, tags, autocomplete = true) {
+
         let $recipe_searchbar = document.querySelector("#recipe-search");
 
         $recipe_searchbar.addEventListener("input", e => {
@@ -417,8 +444,6 @@ class SortData {
             // Tag click event listener
             if(e.target && e.target.classList.contains("tag")) {
 
-
-
                 let search =  sort.generateSearchJson();
                 if(search["entries"].length > 0)
                 {
@@ -434,14 +459,14 @@ class SortData {
 
         });
 
-        this.initAutocompleteEvents(tags);
+        if(autocomplete) this.initAutocompleteEvents(tags);
     }
 
     /**
      *
      * Initialize autocomplete dropdowns events
      *
-     * @param tags {Array}
+     * @param tags {Object}
      */
     static initAutocompleteEvents(tags) {
 
@@ -451,7 +476,7 @@ class SortData {
 
             let type = $elem.getAttribute("data-autocomplete");
             let data = tags[type].entries;
-            let autocomplete = new SortData(data, tags[type].container);
+            let autocomplete = new SortData(data, tags[type].container, {"name": "dropdown"});
 
             $elem.addEventListener("input", (e) => {
 

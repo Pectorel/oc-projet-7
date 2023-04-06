@@ -9,8 +9,8 @@ class DropdownOption {
 
     getDropdownOptionDOM() {
 
-        let $option = createElement("li", null, null, {"data-search-block": this.data["name"]});
-        let $link = createElement("a", null, this.data["name"], {"href": "#", "data-tag-value": this.data["name"], "data-tag-type": this.data["type"]});
+        let $option = createElement("li", null, null, {"data-search-block": this.data["name"].toLowerCase()});
+        let $link = createElement("a", null, this.data["name"], {"href": "#", "data-tag-value": this.data["name"].toLowerCase(), "data-tag-type": this.data["type"]});
         $option.appendChild($link);
 
         $link.addEventListener("click", e => {
@@ -48,7 +48,13 @@ class DropdownOption {
 
     }
 
-    static initEvents() {
+    /**
+     *
+     * Init dropdown events
+     *
+     * @param sort {SortData}
+     */
+    static initEvents(sort) {
 
         // Get all dropdowns
         let $dropdowns = document.querySelectorAll("#tag-btn-container [data-bs-toggle=\"dropdown\"]");
@@ -70,7 +76,6 @@ class DropdownOption {
                 setTimeout(() => {
                     $contenteditable.focus();
                 }, 100);
-
 
             });
 
@@ -105,8 +110,6 @@ class DropdownOption {
         });
 
     }
-
-
 
 }
 

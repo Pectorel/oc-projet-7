@@ -9,6 +9,7 @@ import {JsonFetcher} from "./modules/JsonFetcher";
 import {Factory} from "./factories/Factory";
 import {SortData} from "./modules/SortData";
 import {DropdownOption} from "./models/DropdownOption";
+import * as CustomEvents from "./modules/customEvents";
 
 
 // Global variables
@@ -177,14 +178,16 @@ async function init()
 
     let recipes = await getRecipes();
     tags = await displayRecipes(recipes);
-    sort = new SortData(recipes, document.querySelector(".recipe-line"));
+    sort = new SortData(recipes, document.querySelector(".recipe-line"), {"name": "main-search"});
 
 
 }
 
 init().then(() => {
 
-    DropdownOption.initEvents();
+    DropdownOption.initEvents(sort);
     SortData.initEvents(sort, tags);
+    CustomEvents.init(sort);
+
 
 });
