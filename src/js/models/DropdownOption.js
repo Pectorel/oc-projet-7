@@ -1,5 +1,6 @@
 import {createElement} from "../modules/createElement";
 import {Factory} from "../factories/Factory";
+import * as Utils from "../modules/utils";
 
 class DropdownOption {
 
@@ -91,6 +92,23 @@ class DropdownOption {
 
             });
 
+            // We prevent spacebar from clicking the dropdown button
+            $dropdown.addEventListener("keydown", e => {
+
+                if(e && e.keyCode === 32)
+                {
+                    e.preventDefault();
+
+                    // We add a space manually to the searchbar since event is completely stopped
+                    let $searchbar = $dropdown.querySelector("[contenteditable]");
+                    $searchbar.innerHTML = $searchbar.innerHTML + "&nbsp;";
+                    document.getSelection().selectAllChildren($searchbar);
+                    // We place the carret back at the end of contenteditable
+                    Utils.placeCarret($searchbar);
+
+                }
+            });
+
         });
 
         let $contenteditables = document.querySelectorAll("#tag-btn-container [data-placeholder]");
@@ -108,6 +126,9 @@ class DropdownOption {
 
             });
         });
+
+        // Prevent click to be triggered by spacebar on dropdowns
+
 
     }
 

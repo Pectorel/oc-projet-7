@@ -7,6 +7,8 @@
  */
 function init(sort, autocompletes) {
 
+    // Sort Data Events
+
     // When a search has been done
     document.addEventListener("search", e => {
 
@@ -97,6 +99,7 @@ function init(sort, autocompletes) {
         {
             let instance = e.detail.instance;
 
+            // If main search (search bar)
             if(instance.options && instance.options.name === "main-search")
             {
 
@@ -116,6 +119,7 @@ function init(sort, autocompletes) {
                 }
 
             }
+            // Else if tag search (text search in dropdowns)
             else if(instance.options && instance.options.name === "dropdown")
             {
                 // If dropdown is reset, then we search again to prevent some "d-none" block to be hidden but in recipe
