@@ -235,10 +235,12 @@ class SortData {
 
         json_object.forEach((object) => {
 
+            if(res) return;
+
             let val = object[this.field["options"]["json_key"]].toLowerCase();
             res = this.field["options"] && this.field["options"]["equals"] ? val === this.field["value"] : val.includes(this.field["value"]);
 
-            if(res) return;
+
 
         });
 
@@ -259,10 +261,11 @@ class SortData {
 
         this.data_row[this.field["key"]].forEach((row) => {
 
+            if(res) return;
+
             let val = row.toLowerCase();
             res = this.field["options"] && this.field["options"]["equals"] ? val === this.field["value"] : val.includes(this.field["value"]);
 
-            if(res) return;
 
         });
 
