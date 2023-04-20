@@ -29,7 +29,7 @@ class Recipe {
      */
     getRecipeCardDOM() {
 
-        let $article = createElement("article", ["col-lg-4"]);
+        let $article = createElement("article", ["col-lg-4"], null, {"data-search-block": this.data.id});
 
         let $card = createElement("div", ["card"]);
 

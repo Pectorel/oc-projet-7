@@ -2,190 +2,183 @@
 import '../scss/style.scss'
 // Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap';
+import {auto} from "@popperjs/core";
 
 // Custom Imports
 import {JsonFetcher} from "./modules/JsonFetcher";
 import {Factory} from "./factories/Factory";
-import {createElement} from "./modules/createElement";
-import * as DropdownEvent from "./modules/dropdownEvents";
+import {SortData} from "./modules/SortData";
+import {DropdownOption} from "./models/DropdownOption";
+import * as CustomEvents from "./modules/customEvents";
 
 
-async function getRecipes(){
+// Global variables
 
-    return new Promise((resolve) => {
+/**
+ * @type {SortData}
+ */
+let sort;
 
-        let fetcher = new JsonFetcher("./data/recipes.json");
+/**
+ * @type {Object}
+ */
+let tags;
 
-        fetcher.then((res) => {
+async function getRecipes() {
 
-            let data = res.object;
+  return new Promise((resolve) => {
 
-            resolve(data);
+    /**
+     *
+     * @type {Promise}
+     */
+    let fetcher = new JsonFetcher("./data/recipes.json");
 
-        });
+    fetcher.then((res) => {
+
+      let data = res.object;
+
+      resolve(data);
 
     });
+
+  });
 
 }
 
-function displayRecipes(recipes) {
+async function displayRecipes(recipes) {
 
-    // We get the div container that will get all recipes article inserted into it
-    const $recipe_section = document.querySelector("#recipes-container");
+  // We get the div container that will get all recipes article inserted into it
+  const $recipe_section = document.querySelector(".recipe-line");
 
-    // Setting all filters arrays
-    let ingredients = [];
-    let appliances = [];
-    let ustensils = [];
+  // Setting all filters arrays
+  let tag_dropdowns = {
+    "ingredients": {
+      "entries": [],
+      "container": document.querySelector(".ingredients .dropdown-menu"),
+    },
+    "appliances": {
+      "entries": [],
+      "container": document.querySelector(".appliance .dropdown-menu"),
+    },
+    "ustensils": {
+      "entries": [],
+      "container": document.querySelector(".ustensils .dropdown-menu"),
+    }
+  }
+  let k = 0;
+  let i = 0;
+  let l = 0;
 
+  recipes.forEach((recipe) => {
 
-    let i = 0;
-    let $row = null;
-    recipes.forEach((recipe) => {
+    // Recipe Card
 
-        // Recipe Card
+    /**
+     * @type {Recipe}
+     */
+    const recipeModel = new Factory(recipe, "recipe");
+    const recipeCardDOM = recipeModel.getRecipeCardDOM();
 
-        /**
-         * @type {Recipe}
-         */
-        const recipeModel = new Factory(recipe, "recipe");
+    $recipe_section.appendChild(recipeCardDOM);
 
-        const recipeCardDOM = recipeModel.getRecipeCardDOM();
+    // Filters array push
+    if (recipe.hasOwnProperty("ingredients")) {
 
-        //console.log(recipeCardDOM);
+      for (let j = 0; j < recipe["ingredients"].length; j++) {
+        let ingredient = recipe["ingredients"][j];
 
-        // Every three element, we create a row
-        if(i%3 === 0)
-        {
-            if(i !== 0)
-            {
-                $recipe_section.appendChild($row);
-            }
+        if (!tag_dropdowns.ingredients.entries.some(item => item.name === ingredient["ingredient"].toLowerCase())) {
+          let name = ingredient["ingredient"].toLowerCase();
+          tag_dropdowns.ingredients.entries.push({"name": name});
 
-            $row = createElement("div", ["recipe-line", "row", "align-content-stretch", "gx-5", "mb-5"]);
+          /**
+           *
+           * @type {DropdownOption}
+           */
+          let dropdownModel = new Factory({"name": name, "type": "ingredient"}, "dropdown");
+
+          let $option = dropdownModel.getDropdownOptionDOM();
+          if (k >= 30) $option.classList.add("d-none");
+          tag_dropdowns.ingredients.container.appendChild($option);
+
+          k++;
         }
 
-        $row.appendChild(recipeCardDOM);
+      }
 
-
-        // Filters array push
-        if(recipe.hasOwnProperty("ingredients"))
-        {
-
-            for(let j = 0; j < recipe["ingredients"].length; j++)
-            {
-                let ingredient = recipe["ingredients"][j];
-
-                if(!ingredients.includes(ingredient["ingredient"].toLowerCase()))
-                {
-                    ingredients.push(ingredient["ingredient"].toLowerCase());
-                }
-
-            }
-
-        }
-
-        // Cooking tools
-        if(recipe.hasOwnProperty("appliance"))
-        {
-
-            if(!appliances.includes(recipe["appliance"].toLowerCase()))
-            {
-                appliances.push(recipe["appliance"].toLowerCase());
-            }
-
-        }
-
-        // Ustensils
-        if(recipe.hasOwnProperty("ustensils"))
-        {
-
-            for(let j = 0; j < recipe["ustensils"].length; j++)
-            {
-                let ustensil = recipe["ustensils"][j];
-
-                if(!ustensils.includes(ustensil.toLowerCase()))
-                {
-                    ustensils.push(ustensil.toLowerCase());
-                }
-
-            }
-
-        }
-
-        i++;
-
-    });
-
-
-    // We create the dropdowns DOM options
-    let $ingredient_dropdown = document.querySelector(".ingredients .dropdown-menu");
-
-    let k = 0;
-
-    for(const ingredient of ingredients) {
-        /**
-         *
-         * @type {DropdownOption}
-         */
-        let dropdownModel = new Factory({"name": ingredient, "type": "ingredient"}, "dropdown");
-
-        let $option = dropdownModel.getDropdownOptionDOM();
-        if(k >= 30) $option.classList.add("d-none");
-        $ingredient_dropdown.appendChild($option);
-
-        k++;
     }
 
-    // Appliances
-    let $appliance_dropdown = document.querySelector(".appliance .dropdown-menu");
-    k = 0;
-    for(const appliance of appliances) {
+    // Cooking tools
+    if (recipe.hasOwnProperty("appliance")) {
+
+      if (!tag_dropdowns.appliances.entries.some(item => item.name.includes(recipe["appliance"].toLowerCase()))) {
+        let name = recipe["appliance"].toLowerCase();
+        tag_dropdowns.appliances.entries.push({"name": name});
 
         /**
          *
          * @type {DropdownOption}
          */
-        let dropdownModel = new Factory({"name": appliance, "type": "appliance"}, "dropdown");
+        let dropdownModel = new Factory({"name": name, "type": "appliance"}, "dropdown");
 
         let $option = dropdownModel.getDropdownOptionDOM();
-        if(k >= 30) $option.classList.add("d-none");
-        $appliance_dropdown.appendChild($option);
+        if (i >= 30) $option.classList.add("d-none");
+        tag_dropdowns.appliances.container.appendChild($option);
 
-        k++;
+        i++;
+      }
+
     }
 
     // Ustensils
-    let $ustensils_dropdown = document.querySelector(".ustensils .dropdown-menu");
-    k = 0;
-    for(const ustensil of ustensils) {
+    if (recipe.hasOwnProperty("ustensils")) {
 
-        /**
-         *
-         * @type {DropdownOption}
-         */
-        let dropdownModel = new Factory({"name": ustensil, "type": "ustensil"}, "dropdown");
+      for (let j = 0; j < recipe["ustensils"].length; j++) {
+        let ustensil = recipe["ustensils"][j];
 
-        let $option = dropdownModel.getDropdownOptionDOM();
-        if(k >= 30) $option.classList.add("d-none");
-        $ustensils_dropdown.appendChild($option);
+        if (!tag_dropdowns.ustensils.entries.some(item => item.name.includes(ustensil.toLowerCase()))) {
+          let name = ustensil.toLowerCase();
+          tag_dropdowns.ustensils.entries.push({"name": name});
 
-        k++;
+          /**
+           *
+           * @type {DropdownOption}
+           */
+          let dropdownModel = new Factory({"name": ustensil, "type": "ustensil"}, "dropdown");
+
+          let $option = dropdownModel.getDropdownOptionDOM();
+          if (l >= 30) $option.classList.add("d-none");
+          tag_dropdowns.ustensils.container.appendChild($option);
+
+          l++;
+
+        }
+
+      }
+
     }
+
+  });
+
+  return tag_dropdowns;
 
 }
 
-async function init()
-{
+async function init() {
 
-    let recipes = await getRecipes();
-    displayRecipes(recipes);
+  let recipes = await getRecipes();
+  tags = await displayRecipes(recipes);
+  sort = new SortData(recipes, document.querySelector(".recipe-line"), {"name": "main-search"});
 
 
 }
 
 init().then(() => {
 
-    DropdownEvent.init();
+  DropdownOption.initEvents(sort);
+  let autocompletes = SortData.initEvents(sort, tags);
+  CustomEvents.init(sort, autocompletes);
+
 
 });

@@ -8,31 +8,31 @@
  */
 function createElement(tag, classes = null, txt = null, attributes = null) {
 
-    // We create the HTML Element with given tag
-    const $elem = document.createElement(tag);
+  // We create the HTML Element with given tag
+  const $elem = document.createElement(tag);
 
-    // If the classes array is not empty
-    if(Array.isArray(classes) && classes.length > 0) {
+  // If the classes array is not empty
+  if (Array.isArray(classes) && classes.length > 0) {
 
-        classes.forEach((val) => {
-            // We add every classes
-            $elem.classList.add(val);
-        });
+    classes.forEach((val) => {
+      // We add every classes
+      $elem.classList.add(val);
+    });
 
+  }
+
+  if (attributes != null && Object.keys(attributes).length > 0) {
+
+    for (let i in attributes) {
+      $elem.setAttribute(i, attributes[i]);
     }
+  }
 
-    if(attributes != null && Object.keys(attributes).length > 0) {
+  if (txt != null) {
+    $elem.textContent = txt;
+  }
 
-        for(let i in attributes) {
-            $elem.setAttribute(i, attributes[i]);
-        }
-    }
-
-    if(txt != null){
-        $elem.textContent = txt;
-    }
-
-    return $elem;
+  return $elem;
 
 }
 
