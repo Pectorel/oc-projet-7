@@ -2,6 +2,14 @@
 
 .dropdown-toggle {
 
+  &.show {
+
+    &:after{
+      transform: translateY(-50%) rotateZ(180deg) !important;
+    }
+
+  }
+
   [contenteditable] {
 
     &:focus-visible, &:focus {
