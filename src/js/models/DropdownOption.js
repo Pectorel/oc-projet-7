@@ -110,6 +110,38 @@ class DropdownOption {
           Utils.placeCarret($searchbar);
 
         }
+        // If we press enter
+        else if(e && e.keyCode === 13) {
+          e.preventDefault();
+
+          // We check how many options there is left
+          let $parent = $dropdown.parentElement;
+          let $options = $parent.querySelectorAll("[data-search-block]:not(.d-none):not(.not-in-recipe) [data-tag-value]");
+
+          // If only one option left, we select the option
+          if($options.length === 1) {
+            $options[0].click();
+          }
+          // Else we check if the value entered is matching a current option
+          else if($options.length > 1) {
+
+            // We get the searchbar value
+            let $searchbar = $dropdown.querySelector("[contenteditable]");
+            let val = $searchbar.textContent.toLowerCase();
+
+            for(let $option of $options) {
+
+              // If an option corresponds to the value entered in searchbar, then we select this option
+              if(val === $option.getAttribute("data-tag-value"))
+              {
+                $option.click();
+                break;
+              }
+
+            }
+
+          }
+        }
       });
 
     });
