@@ -1,12 +1,20 @@
 // Custom Dropdown styling
 
-.dropdown-toggle{
+.dropdown-toggle {
 
-  [contenteditable]{
+  &.show{
 
-    &:focus-visible, &:focus{
+    &:after{
+      transform: translateY(-50%) rotateZ(180deg) !important;
+    }
 
-      border:none;
+  }
+
+  [contenteditable] {
+
+    &:focus-visible, &:focus {
+
+      border: none;
       outline: none;
 
     }

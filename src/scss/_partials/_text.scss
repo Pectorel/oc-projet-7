@@ -2,17 +2,17 @@
 
 // ContentEditable
 
-[contenteditable]{
+[contenteditable] {
 
   position: relative;
 
-  &:empty:before{
+  &:empty:before {
     content: attr(data-placeholder);
     color: rgba(#fff, .5);
 
   }
 
-  &:empty:after{
+  &:empty:after {
 
     content: "";
     display: block;

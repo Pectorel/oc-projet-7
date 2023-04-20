@@ -13,23 +13,23 @@
 
 // Dropdown
 
-#tags-container{
+#tags-container {
 
-  .tags-list{
+  .tags-list {
 
-    &:empty{
+    &:empty {
       margin-bottom: 0 !important;
       display: none !important;
     }
 
   }
 
-  .dropdown-toggle{
+  .dropdown-toggle {
 
     position: relative;
     width: 100%;
 
-    &::after{
+    &::after {
       border: none !important;
       font: normal normal normal 1.4rem/1 FontAwesome;
       content: "\f107" !important;
@@ -46,13 +46,13 @@
 
 
 // Header
-.page-header{
+.page-header {
 
-  .header-img{
+  .header-img {
     width: 52px;
   }
 
-  .header-subtitle{
+  .header-subtitle {
     font-family: "DM Sans", sans-serif;
   }
 
@@ -60,9 +60,9 @@
 }
 
 // Searchbar
-.searchbar{
+.searchbar {
 
-  .search-icon{
+  .search-icon {
 
     font-size: 2rem;
 
@@ -71,11 +71,10 @@
 }
 
 
-
 // Dropdown Buttons
-#tag-btn-container{
+#tag-btn-container {
 
-  .btn{
+  .btn {
 
     font-size: 1.125rem;
     font-weight: 700;
@@ -83,7 +82,7 @@
 
   }
 
-  .dropdown-menu{
+  .dropdown-menu {
 
     min-width: 0 !important;
     right: 0 !important;
@@ -92,7 +91,7 @@
     padding: 0 1rem 1rem 1rem;
     width: 100%;
 
-    &.show{
+    &.show {
       transform: none !important;
       box-sizing: border-box;
       border: none;
@@ -104,11 +103,11 @@
 
         font-size: 1.125rem;
 
-        *{
+        * {
           display: inline-block;
         }
 
-        *::first-letter{
+        *::first-letter {
           text-transform: uppercase;
 
         }
@@ -117,9 +116,9 @@
 
     }
 
-    [data-search-block]{
+    [data-search-block] {
 
-      &.selected, &.not-in-recipe{
+      &.selected, &.not-in-recipe {
         display: none;
       }
 
@@ -128,16 +127,16 @@
   }
 
 
-
 }
 
 // Recipe list
-#recipes-container{
+#recipes-container {
 
-  #no-recipe-found{
+  #no-recipe-found {
 
     font-size: 1.4rem;
-    .error-message{
+
+    .error-message {
 
     }
 

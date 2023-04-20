@@ -1,7 +1,7 @@
 // Tags / Badge related style
 
 
-.tag{
+.tag {
 
   position: relative;
   padding: .8rem 3.2rem .8rem 1.25rem;
@@ -9,7 +9,7 @@
   pointer-events: none;
 
   // Close logo
-  &:after{
+  &:after {
     content: "";
     position: absolute;
     top: 50%;
@@ -23,20 +23,20 @@
     cursor: pointer;
     pointer-events: all;
   }
-  
-  &::first-letter{
+
+  &::first-letter {
     text-transform: uppercase;
   }
 
-  &.ingredient{
+  &.ingredient {
     background: $blue;
   }
 
-  &.appliance{
+  &.appliance {
     background: $green;
   }
 
-  &.ustensil{
+  &.ustensil {
     background: $red;
   }
 
