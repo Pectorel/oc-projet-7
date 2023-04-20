@@ -1,27 +1,27 @@
 class JsonFetcher {
 
-    /**
-     *
-     * @param path
-     * @returns {Promise<unknown>}
-     */
-    constructor(path) {
+  /**
+   *
+   * @param path
+   * @returns {Promise<unknown>}
+   */
+  constructor(path) {
 
-        return new Promise((resolve) => {
+    return new Promise((resolve) => {
 
-            fetch(path)
-                .then((res) => {
+      fetch(path)
+        .then((res) => {
 
-                    res.json()
-                        .then((data) => {
-                            this.object = data;
-                            resolve({"instance": this, "object": this.object});
-                        });
-                });
-
+          res.json()
+            .then((data) => {
+              this.object = data;
+              resolve({"instance": this, "object": this.object});
+            });
         });
 
-    }
+    });
+
+  }
 
 }
 
